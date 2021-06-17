@@ -1,0 +1,6 @@
+.*.swp
+*~
+credentials.json
+searches/
+.venv
+venv
