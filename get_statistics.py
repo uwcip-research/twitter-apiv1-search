@@ -3,7 +3,7 @@ import logging
 import sys
 import traceback
 import tweepy
-import ujson as json
+import json
 from datetime import datetime
 
 
@@ -21,7 +21,7 @@ def main():
     logging.captureWarnings(True)
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
-    log_handler = logging.StreamHandler(stream=sys.stdout)
+    log_handler = logging.StreamHandler(stream=sys.stderr)
     log_handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)-8s - %(message)s"))
     logger.addHandler(log_handler)
 
@@ -47,7 +47,7 @@ def main():
                     continue
                 accounts.append(line)
 
-        print("user_id,user_screen_name,captured_at,created_at,followers,friends,favorites,statuses", file=sys.stderr)
+        print("user_id,user_screen_name,captured_at,created_at,followers,friends,favorites,statuses")
         api_key = 0
         for account in accounts:
             api = apis[api_key][0]
@@ -67,9 +67,9 @@ def main():
                     str(data["friends_count"]),
                     str(data["favourites_count"]),
                     str(data["statuses_count"]),
-                ]), file=sys.stderr)
+                ]))
             except Exception as e:
-                print("{},{}".format(account, e), file=sys.stderr)
+                print("{},{}".format(account, e))
 
         return 0
     except Exception:
