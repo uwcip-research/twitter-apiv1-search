@@ -1,10 +1,10 @@
 import argparse
 import logging
+import json
 import os
 import sys
 import traceback
 import tweepy
-import ujson as json
 from tweepy import TweepError
 from datetime import datetime
 from queue import Queue
@@ -31,7 +31,7 @@ def main():
     logging.captureWarnings(True)
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
-    log_handler = logging.StreamHandler(stream=sys.stdout)
+    log_handler = logging.StreamHandler(stream=sys.stderr)
     log_handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)-8s - %(message)s"))
     logger.addHandler(log_handler)
 

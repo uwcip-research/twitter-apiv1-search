@@ -6,7 +6,6 @@ import psycopg2
 import re
 import sys
 import traceback
-import ujson as json
 from collections import OrderedDict
 from glob import glob
 from html.parser import HTMLParser

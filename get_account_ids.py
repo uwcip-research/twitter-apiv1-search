@@ -3,7 +3,7 @@ import logging
 import sys
 import traceback
 import tweepy
-import ujson as json
+import json
 from datetime import datetime
 
 
@@ -21,7 +21,7 @@ def main():
     logging.captureWarnings(True)
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
-    log_handler = logging.StreamHandler(stream=sys.stdout)
+    log_handler = logging.StreamHandler(stream=sys.stderr)
     log_handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)-8s - %(message)s"))
     logger.addHandler(log_handler)
 
