@@ -101,6 +101,8 @@ def fetch_account(account, credentials, output, fetch_tweets, fetch_friends, fet
         logger.error(traceback.format_exc())
         raise
 
+    file_name = os.path.join(output, "{}.json.tmp".format(account))
+
     try:
         obj = api.get_user(id=account)
         data = obj._json
@@ -113,29 +115,31 @@ def fetch_account(account, credentials, output, fetch_tweets, fetch_friends, fet
     except TweepError as e:
         if e.api_code == 50:
             logger.info("finished fetching unknown account {}".format(account))
-            with open(os.path.join(output, "{}.json".format(account)), "wt") as f:
+            with open("{}.tmp".format(file_name), "wt") as f:
                 print(json.dumps({
                     "id": account,
                     "captured_at": str(datetime.now()),
                     "unknown": True
                 }, indent=4), file=f)
+            os.rename("{}.tmp".format(file_name), file_name)
             return
 
         if e.api_code == 63:
             logger.info("finished fetching suspended account {}".format(account))
-            with open(os.path.join(output, "{}.json".format(account)), "wt") as f:
+            with open("{}.tmp".format(file_name), "wt") as f:
                 print(json.dumps({
                     "id": account,
                     "captured_at": str(datetime.now()),
                     "suspended": True
                 }, indent=4), file=f)
+            os.rename("{}.tmp".format(file_name), file_name)
             return
 
         raise
 
     if obj.protected:
         logger.info("finished fetching protected account {}".format(account))
-        with open(os.path.join(output, "{}.json".format(account)), "wt") as f:
+        with open("{}.tmp".format(file_name), "wt") as f:
             print(json.dumps({
                 "id": data["id_str"],
                 "screen_name": data["screen_name"],
@@ -145,6 +149,7 @@ def fetch_account(account, credentials, output, fetch_tweets, fetch_friends, fet
                 "tweet_count": data["statuses_count"],
                 "protected": True
             }, indent=4), file=f)
+        os.rename("{}.tmp".format(file_name), file_name)
         return
 
     tweets = None
