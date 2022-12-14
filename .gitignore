@@ -1,6 +1,9 @@
 .*.swp
 *~
 credentials.json
+credentials*
 searches/
 .venv
 venv
+dat/*
+bash/*
