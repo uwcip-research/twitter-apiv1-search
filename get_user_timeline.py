@@ -1,5 +1,6 @@
 import argparse
 import logging
+from logging.handlers import RotatingFileHandler
 import os.path
 import sys
 import time
@@ -14,6 +15,10 @@ logging.captureWarnings(True)
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 log_handler = logging.StreamHandler(stream=sys.stderr)
+log_handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)-8s - %(message)s"))
+logger.addHandler(log_handler)
+
+log_handler = RotatingFileHandler("logs/error.log", maxBytes=100000, backupCount=10)
 log_handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)-8s - %(message)s"))
 logger.addHandler(log_handler)
 
@@ -52,12 +57,15 @@ def fetch_user_timeline(api, account_id, outputfile):
 def main(credential_file, account_file, output):
     credentials = get_credentials(credential_file)
     api = get_API(credentials)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S.%f")
+    timestamp = "20221214" #20221214
     accounts = get_accounts(account_file)
     logger.info('total number of accounts=%s'%len(accounts))
     for account in accounts:
         output_file = os.path.join(output, "%s_%s.json.gz"%(account, timestamp))
-        print('output file', output_file)
+        if os.path.exists(output_file):
+            continue
+        # print('output file', output_file)
+        logger.info("output file: %s"%output_file)
         try:
             fetch_user_timeline(api, account, output_file)
         except Exception as e:
