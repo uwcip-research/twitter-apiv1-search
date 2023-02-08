@@ -15,6 +15,8 @@ def main():
     )
     parser.add_argument("credentials", help="a json file containing credentials to use")
     parser.add_argument("accounts", help="a file containing account names")
+    parser.add_argument("output", help="a file containing account names that still exist")
+
     args = parser.parse_args()
 
     # configure logging
@@ -24,6 +26,8 @@ def main():
     log_handler = logging.StreamHandler(stream=sys.stderr)
     log_handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)-8s - %(message)s"))
     logger.addHandler(log_handler)
+
+    output_file = args.output
 
     # start the main program
     try:
@@ -48,6 +52,7 @@ def main():
                 accounts.append(line)
 
         api_key = 0
+        live_accounts = []
         for account in accounts:
             api = apis[api_key]
             api_key = api_key + 1
@@ -68,8 +73,14 @@ def main():
 #                    str(data["statuses_count"]),
 #                ]))
                 print(data["id_str"])
+                live_accounts.append(data["id_str"])
             except Exception as e:
                 print("{}: {}".format(account, e))
+
+
+        #write file
+        with open(output_file, 'w') as f:
+                f.write("\n".join(live_accounts))
 
         return 0
     except Exception:
